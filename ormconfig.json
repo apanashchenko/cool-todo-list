@@ -1,0 +1,7 @@
+{
+  "type": "sqlite",
+  "database": "./data/todos.sqlite",
+  "logging": true,
+  "entities": ["./dist/model/*.js", "src/model/*.ts"],
+  "synchronize": true
+}
