@@ -9,7 +9,7 @@ router.get('/', getAllProject);
 
 router.post('/', createProject);
 
-router.use(async (req, res, next) => {
+router.use('/:projectId', async (req, res, next) => {
     const projectId = +req.params.projectId;
     console.log('projectId', projectId)
     const project = await projectService.findProjectById(projectId);
