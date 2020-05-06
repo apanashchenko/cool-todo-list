@@ -9,16 +9,9 @@ export const createProject: RequestHandler = async (req, res, next) => {
 }
 
 export const getProject: RequestHandler = async (req, res, next) => {
-    const projectId = +req.params.id;
-    console.log('req.params', req.params)
-
+    const projectId = +req.params.projectId;
     const project = await projectService.findProjectById(projectId);
-    if (project) {
-        console.log(project);
-        return res.status(200).json(project);
-    }
-
-    return res.status(404).json({message: `Project with id ${projectId} not found.`});
+    return res.status(200).json(project);
 }
 
 export const getAllProject: RequestHandler = async (req, res, next) => {
@@ -27,27 +20,15 @@ export const getAllProject: RequestHandler = async (req, res, next) => {
 }
 
 export const deleteProject: RequestHandler = async (req, res, next) => {
-    const projectId = +req.params.id;
-    const project = await projectService.findProjectById(projectId);
-
-    if (project) {
-        await projectService.deleteProject(projectId)
-        return res.status(200).json({message: `Project with id ${projectId} removed.`});
-    }
-
-    return res.status(404).json({message: `Project with id ${projectId} not found.`});
+    const projectId = +req.params.projectId;
+    await projectService.deleteProject(projectId)
+    return res.status(200).json({message: `Project with id ${projectId} removed.`});
 }
 
 export const updateProject: RequestHandler = async (req, res, next) => {
-    const projectId = +req.params.id;
+    const projectId = +req.params.projectId;
     const updateProject = req.body;
 
-    const project = await projectService.findProjectById(projectId);
-
-    if (project) {
-        await projectService.updateProject(projectId, updateProject);
-        return res.status(200).json({message: 'updated'});
-    }
-
-    return res.status(404).json({message: `Project with id ${projectId} not found.`});
+    await projectService.updateProject(projectId, updateProject);
+    return res.status(200).json({message: 'updated'});
 }
