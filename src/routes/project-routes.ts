@@ -11,7 +11,6 @@ router.post('/', createProject);
 
 router.use('/:projectId', async (req, res, next) => {
     const projectId = +req.params.projectId;
-    console.log('projectId', projectId)
     const project = await projectService.findProjectById(projectId);
     if (!project) return res.status(404).json({message: `Project with id ${projectId} not found.`});
     next();

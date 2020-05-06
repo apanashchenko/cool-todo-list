@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { getAllProjectTodos, createTodo, getTodoById, updateTodo, deleteTodo } from '../controller/todo-controller'
 import * as projectService from "../service/project-service";
 import * as todoService from "../service/todo-service";
-import {Project} from "../model/project";
 
 const router = Router({ mergeParams: true});
 
