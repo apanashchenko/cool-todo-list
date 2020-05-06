@@ -8,7 +8,7 @@ export const save = async (project: Project) => {
 };
 
 export const findById = async (id: number) => {
-    return await projectRepository().findOne(id);
+    return await projectRepository().findOne(id, { relations: ["todos"]});
 };
 
 export const findAll = async () => {
@@ -21,8 +21,4 @@ export const deleteProject = async (id: number) => {
 
 export const updateProject = async (id: number, project: Project) => {
     return await projectRepository().update(id, project);
-};
-
-export const findTodos = async (id: number) => {
-    return await projectRepository().find({ relations: ["todos"]});
 };

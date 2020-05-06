@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createTodo, getAllProjectTodos } from '../controller/todo-controller'
+import { getAllProjectTodos, createTodo, getTodoById, updateTodo, deleteTodo } from '../controller/todo-controller'
 
 const router = Router({ mergeParams: true});
 
@@ -7,8 +7,10 @@ router.get('/', getAllProjectTodos);
 
 router.post('/', createTodo);
 
-router.patch('/:id', );
+router.get('/:id', getTodoById);
 
-router.delete('/:id');
+router.put('/:id', updateTodo);
+
+router.delete('/:id', deleteTodo);
 
 export default router;

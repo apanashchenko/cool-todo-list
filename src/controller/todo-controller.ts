@@ -2,40 +2,64 @@ import {RequestHandler} from 'express'
 import {Todo} from '../model/todo'
 import * as projectService from "../service/project-service";
 import * as todoService from "../service/todo-service";
-import {Project} from "../model/project";
 
 
 export const getAllProjectTodos: RequestHandler = async (req, res, next) => {
-    const projectId = +req.params.id;
+    const projectId = +req.params.projectId;
     const project = await projectService.findProjectById(projectId);
-    console.log('project', project)
-    return res.json(project?.todos).status(200);
+    if (project) {
+        return res.status(200).json(project?.todos)
+    }
+
+    return res.status(404).json({message: `Project with id ${projectId} not found.`});
 }
 
 export const createTodo: RequestHandler = async (req, res, next) => {
     const projectId = +req.params.projectId;
-    console.log('req.params',req.params);
-    console.log('projectId', projectId);
     const project = await projectService.findProjectById(projectId);
-    console.log('project', project);
+
     if (project) {
-        let newTodo = req.body as Todo;
-        console.log('newTodo', newTodo);
-        if (!project.todos) {
-            project.todos = [];
-            console.log('project.todos;', project.todos);
-        }
-
-        await projectService.updateProject(projectId, project)
-
-        return res.json(newTodo).status(200);
+        let todo = req.body as Todo;
+        const newTodo = await todoService.saveTodo(todo);
+        project.todos = [todo].concat(project.todos);
+        await projectService.saveProject(project);
+        return res.status(200).json({newTodo});
     }
 
-    return res.status(404);
+    return res.status(404).json({message: `Project with id ${projectId} not found.`});
 }
 
-export const updateTodo: RequestHandler = (req, res, next) => {
+export const getTodoById: RequestHandler = async (req, res, next) => {
+    const todoId = +req.params.id;
+    const todo = await todoService.findTodoById(todoId);
+    if (todo) {
+        return res.json(todo).status(200);
+    }
+    return res.status(404).json({message: `Todo with id ${todoId} not found.`});
 }
 
-export const deleteTodo: RequestHandler = (req, res, next) => {
+export const updateTodo: RequestHandler = async (req, res, next) => {
+    const todoId = +req.params.id;
+
+    const currentTodo = await todoService.findTodoById(todoId);
+
+    if (currentTodo) {
+        const updatedTodo = req.body as Todo;
+        await todoService.updateTodo(todoId, updatedTodo);
+        return res.json({message: 'updated'}).status(200);
+    }
+
+    return res.status(404).json({message: `Todo with id ${todoId} not found.`});
+}
+
+export const deleteTodo: RequestHandler = async (req, res, next) => {
+    const todoId = +req.params.id;
+
+    const currentTodo = await todoService.findTodoById(todoId);
+    if (currentTodo) {
+        await todoService.deleteTodo(todoId);
+        return res.status(201).json({message: `Todo with id ${todoId} removed.`});
+    }
+
+    return res.status(404).json({message: `Todo with id ${todoId} not found.`});
 }
